@@ -33,3 +33,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# API Key (This is secret so it should not go in the git repo!!!)
+api_key.txt
