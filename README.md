@@ -24,6 +24,7 @@ To use AlchemyAPI, you'll need to obtain an API key and attach that key to all r
 To get started and run the example, simply:
 
 	git clone https://github.com/steveherschleb/sdk_python.git
+	cd sdk_python
 	python -c 'import alchemyapi;alchemyapi.setkey("{API_KEY}");'
 	python example.py
 
