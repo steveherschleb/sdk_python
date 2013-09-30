@@ -117,59 +117,69 @@ def setkey(key):
 
 
 
-def sentiment(flavor,  data):
+def sentiment(flavor,  data, options={}):
 	"""
 	Calculates the sentiment for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/sentiment-analysis/
 	For the docs, please refer to: http://www.alchemyapi.com/api/sentiment-analysis/
+	
+	Available Options:
+	showSourceText	-> 0: disabled, 1: enabled
 	"""
 
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['sentiment']:
-		return { u'status':'ERROR', u'statusMessage':u'sentiment analysis for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'sentiment analysis for ' + flavor + ' not available' }
 		
 	url = (BASE_URL +
 			ENDPOINTS['sentiment'][flavor] + 
 			'?apikey=' + API_KEY + 
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'showSourceText=0' +
 			'&outputMode=json')
 	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+		
 	return analyze(url)
 
 
 
-def sentiment_targeted(flavor, data, target):
+def sentiment_targeted(flavor, data, target, options={}):
 	"""
 	Calculates the targeted sentiment for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/sentiment-analysis/
 	For the docs, please refer to: http://www.alchemyapi.com/api/sentiment-analysis/
+	
+	Available Options:
+	showSourceText	-> 0: disabled, 1: enabled
 	"""
 
 	if API_KEY == '':
 		init()
 	
 	if target is None or target == '':
-		return { u'status':'ERROR', u'statusMessage':u'targeted sentiment requires a non-null target' }
+		return { u'status':'ERROR', u'statusInfo':u'targeted sentiment requires a non-null target' }
 
 	if flavor not in ENDPOINTS['sentiment_targeted']:
-		return { u'status':'ERROR', u'statusMessage':u'targeted sentiment analysis for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'targeted sentiment analysis for ' + flavor + ' not available' }
 		
 	url = (BASE_URL +
 			ENDPOINTS['sentiment_targeted'][flavor] + 
 			'?apikey=' + API_KEY + 
 			'&target=' + target +
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'showSourceText=0' +
 			'&outputMode=json')
 	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+
 	return analyze(url)
 
 
 
-def author(flavor, data):
+def author(flavor, data, options={}):
 	"""
 	Extracts the author from a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/author-extraction/
@@ -180,152 +190,181 @@ def author(flavor, data):
 		init()
 	
 	if flavor not in ENDPOINTS['author']:
-		return { u'status':'ERROR', u'statusMessage':u'author extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'author extraction for ' + flavor + ' not available' }
 
 	url = (BASE_URL +
 			ENDPOINTS['author'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
 			'&outputMode=json')
+
+
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+
 	return analyze(url)
 
 
-def keywords(flavor, data):
+def keywords(flavor, data, options={}):
 	"""
 	Extracts the keywords from text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/keyword-extraction/
 	For the docs, please refer to: http://www.alchemyapi.com/api/keyword-extraction/
+			
+	Available Options:
+	keywordExtractMode
+	sentiment
+	showSourceText
+	maxRetrieve
 	"""
 	
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['keywords']:
-		return { u'status':'ERROR', u'statusMessage':u'keyword extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'keyword extraction for ' + flavor + ' not available' }
 
 	url = (BASE_URL + 
 			ENDPOINTS['keywords'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'&outputMode=json' +
-			'&keywordExtractMode=normal' +
-			'&sentiment=0' +
-			'&showSourceText=0' +
-			'&maxRetrieve=50')
+			'&outputMode=json')
+	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
 	
 	return analyze(url)
 
         
-def concepts(flavor, data):
+def concepts(flavor, data, options={}):
 	"""
 	Tags the concepts for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/concept-tagging/
 	For the docs, please refer to: http://www.alchemyapi.com/api/concept-tagging/ 
+	
+	Available Options:
+	maxRetrieve
+	linkedData
+	showSourceText
 	"""
 
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['concepts']:
-		return { u'status':'ERROR', u'statusMessage':u'concept tagging for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'concept tagging for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['concepts'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'&maxRetrieve=8' +
-			'&linkedData=1' +
-			'&showSourceText=0' +
 			'&outputMode=json')
+	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
 	
 	return analyze(url)
         
 
-def entities(flavor, data):
+def entities(flavor, data, options={}):
 	"""
 	Extracts the entities for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/entity-extraction/ 
 	For the docs, please refer to: http://www.alchemyapi.com/api/entity-extraction/
+	
+	disambiguate 
+	linkedData
+	coreference
+	quotations 
+	sentiment
+	showSourceText
+	maxRetrieve
 	"""
 	
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['entities']:
-		return { u'status':'ERROR', u'statusMessage':u'entity extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'entity extraction for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['entities'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) + 
-			'&outputMode=json' + 
-			'&disambiguate=1' + 
-			'&linkedData=1' +
-			'&coreference=1' +
-			'&quotations=0' + 
-			'&sentiment=0' +
-			'&showSourceText=0' +
-			'&maxRetrieve=50')
+			'&outputMode=json') 
+	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
 	
 	return analyze(url)
 
 
-def category(flavor, data):
+def category(flavor, data, options={}):
 	"""
 	Categorizes the text for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/text-categorization/
 	For the docs, please refer to: http://www.alchemyapi.com/api/text-categorization/
+	
+	Available Options:
+	showSourceText
 	"""
 	
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['category']:
-		return { u'status':'ERROR', u'statusMessage':u'text categorization for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'text categorization for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['category'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'&outputMode=json'+ 
-			'&showSourceText=0')
+			'&outputMode=json') 
 
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+	
 	return analyze(url)
 
 
-def relations(flavor, data):
+def relations(flavor, data, options={}):
 	"""
 	Extracts the relations for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/relation-extraction/ 
 	For the docs, please refer to: http://www.alchemyapi.com/api/relation-extraction/
+	
+	Available Options:
+	'&sentiment=0' +
+	'&keywords=0' +
+	'&entities=0' +
+	'&requireEntities=0' +
+	'&sentimentExcludeEntities=1' +
+	'&disambiguate=1' +
+	'&linkedData=1' +
+	'&coreference=1' + 
+	'&showSourceText=0' +
+	'&maxRetrieve=50')
 	"""
 	
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['relations']:
-		return { u'status':'ERROR', u'statusMessage':u'relation extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'relation extraction for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['relations'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'&outputMode=json' +
-			'&sentiment=0' +
-			'&keywords=0' +
-			'&entities=0' +
-			'&requireEntities=0' +
-			'&sentimentExcludeEntities=1' +
-			'&disambiguate=1' +
-			'&linkedData=1' +
-			'&coreference=1' + 
-			'&showSourceText=0' +
-			'&maxRetrieve=50')
+			'&outputMode=json')
 
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+	
 	return analyze(url)
 
 
-def language(flavor, data):
+def language(flavor, data, options={}):
 	"""
 	Detects the language for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/api/language-detection/ 
@@ -336,7 +375,7 @@ def language(flavor, data):
 		init()
 
 	if flavor not in ENDPOINTS['language']:
-		return { u'status':'ERROR', u'statusMessage':u'language detection for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'language detection for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['language'][flavor] +
@@ -344,34 +383,42 @@ def language(flavor, data):
 			'&' + flavor + '=' + urllib2.quote(data) +
 			'&outputMode=json')
 
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+	
 	return analyze(url)
 
 
-def text_clean(flavor, data):
+def text_clean(flavor, data, options={}):
 	"""
 	Extracts the cleaned text (removes ads, navigation, etc.) for text, a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/
 	For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
+	
+	Available Options:
+	'&useMetadata=1' +
+	'&extractLinks=0')
 	"""
 	
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['text_clean']:
-		return { u'status':'ERROR', u'statusMessage':u'clean text extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'clean text extraction for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['text_clean'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'&outputMode=json' + 
-			'&useMetadata=1' +
-			'&extractLinks=0')
+			'&outputMode=json') 
 
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+	
 	return analyze(url)
 
 
-def text_raw(flavor, data):
+def text_raw(flavor, data, options={}):
 	"""
 	Extracts the raw text (includes ads, navigation, etc.) for a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/ 
@@ -382,7 +429,7 @@ def text_raw(flavor, data):
 		init()
 
 	if flavor not in ENDPOINTS['text_raw']:
-		return { u'status':'ERROR', u'statusMessage':u'raw text extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'raw text extraction for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['text_raw'][flavor] +
@@ -390,35 +437,43 @@ def text_raw(flavor, data):
 			'&' + flavor + '=' + urllib2.quote(data) +
 			'&outputMode=json')
 	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+	
 	return analyze(url)
 
 
 
-def text_title(flavor, data):
+def text_title(flavor, data, options={}):
 	"""
 	Extracts the title for a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/ 
 	For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
+	
+	Available Options:
+	'&useMetadata=1')
 	"""
 	
 	if API_KEY == '':
 		init()
 
 	if flavor not in ENDPOINTS['text_title']:
-		return { u'status':'ERROR', u'statusMessage':u'title extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'title extraction for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['text_title'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
-			'&outputMode=json' +
-			'&useMetadata=1')
+			'&outputMode=json')
+	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
 	
 	return analyze(url)
 
 
 
-def microformats(flavor, data):
+def microformats(flavor, data, options={}):
 	"""
 	Parses the microformats for a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/microformats-parsing/
@@ -429,7 +484,7 @@ def microformats(flavor, data):
 		init()
 
 	if flavor not in ENDPOINTS['microformats']:
-		return { u'status':'ERROR', u'statusMessage':u'microformat extraction for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'microformat extraction for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['microformats'][flavor] +
@@ -437,11 +492,14 @@ def microformats(flavor, data):
 			'&' + flavor + '=' + urllib2.quote(data) +
 			'&outputMode=json')
 
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+	
 	return analyze(url)
 
 
 
-def feeds(flavor, data):
+def feeds(flavor, data, options={}):
 	"""
 	Detects the RSS/ATOM feeds for a URL or HTML.
 	For an overview, please refer to: http://www.alchemyapi.com/products/features/feed-detection/ 
@@ -452,13 +510,17 @@ def feeds(flavor, data):
 		init()
 
 	if flavor not in ENDPOINTS['feeds']:
-		return { u'status':'ERROR', u'statusMessage':u'feed detection for ' + flavor + ' not available' }
+		return { u'status':'ERROR', u'statusInfo':u'feed detection for ' + flavor + ' not available' }
 	
 	url = (BASE_URL +
 			ENDPOINTS['feeds'][flavor] +
 			'?apikey=' + API_KEY +
 			'&' + flavor + '=' + urllib2.quote(data) +
 			'&outputMode=json')
+	
+	for key in options:
+		url += '&' + key + '=' + str(options[key])
+	
 	return analyze(url)
 
 

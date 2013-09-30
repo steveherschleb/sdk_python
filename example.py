@@ -99,7 +99,7 @@ print ''
 print 'Processing text: ', demo_text
 print ''
 
-response = alchemyapi.keywords('text',demo_text)
+response = alchemyapi.keywords('text',demo_text, { 'sentiment':1 })
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
