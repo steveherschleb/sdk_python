@@ -1,4 +1,5 @@
 import alchemyapi
+import json
 
 demo_text = 'Yesterday dumb Bob destroyed my fancy iPhone in beautiful Denver, Colorado. I guess I will have to head over to the Apple Store and buy a new one.'
 demo_url = 'http://blog.programmableweb.com/2011/09/16/new-api-billionaire-text-extractor-alchemy/'
@@ -41,11 +42,11 @@ print ''
 print 'Processing text: ', demo_text
 print ''
 
-response = alchemyapi.entities('text',demo_text)
+response = alchemyapi.entities('text',demo_text, { 'sentiment':1 })
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 
 	print ''
@@ -54,6 +55,7 @@ if response['status'] == 'OK':
 		print 'text: ', entity['text']
 		print 'type: ', entity['type']
 		print 'relevance: ', entity['relevance']
+		print 'sentiment: ', entity['sentiment']['type'] + ' (' + entity['sentiment']['score'] + ')'
 		print ''
 else:
 	print 'Error in entity extraction call: ', response['statusInfo']
@@ -76,7 +78,7 @@ response = alchemyapi.sentiment('html',demo_html)
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 	print ''
 	print '## Document Sentiment ##'
@@ -103,7 +105,7 @@ response = alchemyapi.keywords('text',demo_text, { 'sentiment':1 })
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 
 	print ''
@@ -111,6 +113,7 @@ if response['status'] == 'OK':
 	for keyword in response['keywords']:
 		print 'text: ', keyword['text']
 		print 'relevance: ', keyword['relevance']
+		print 'sentiment: ', keyword['sentiment']['type'] + ' (' + keyword['sentiment']['score'] + ')'
 		print ''
 else:
 	print 'Error in keyword extaction call: ', response['statusInfo']
@@ -133,7 +136,7 @@ response = alchemyapi.concepts('text',demo_text)
 
 if response['status'] == 'OK':
 	print '## Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 
 	print ''
@@ -163,7 +166,7 @@ response = alchemyapi.relations('text',demo_text)
 
 if response['status'] == 'OK':
 	print "## Object ##"
-	print response
+	print json.dumps(response, indent=4)
 
 
 	print ''
@@ -200,7 +203,7 @@ response = alchemyapi.category('text',demo_text)
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 
 	print ''
@@ -229,7 +232,7 @@ response = alchemyapi.language('text',demo_text)
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 
 	print ''
@@ -259,7 +262,7 @@ response = alchemyapi.author('url',demo_url)
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 	print ''
 	print '## Author ##'
@@ -286,7 +289,7 @@ response = alchemyapi.feeds('url',demo_url)
 
 if response['status'] == 'OK':
 	print '## Response Object ##'
-	print response
+	print json.dumps(response, indent=4)
 
 	print ''
 	print '## Feeds ##'
