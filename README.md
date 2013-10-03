@@ -25,7 +25,7 @@ To get started and run the example, simply:
 
 	git clone https://github.com/steveherschleb/sdk_python.git
 	cd sdk_python
-	python alchemyapi YOUR_API_KEY
+	python alchemyapi.py YOUR_API_KEY
 	python example.py
 
 
