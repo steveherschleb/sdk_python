@@ -1,6 +1,12 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import urllib2
-import json
+try:
+	import json
+except ImportError:
+	#Older versions of Python (i.e. 2.4) require simplejson instead of json
+	import simplejson as json
+
 
 if __name__ == '__main__':
 	"""
@@ -22,10 +28,10 @@ if __name__ == '__main__':
 			f = open('api_key.txt','w')
 			f.write(sys.argv[1])
 			f.close()
-			print 'Key: ' + sys.argv[1] + ' was written to api_key.txt'
-			print 'You are now ready to start using AlchemyAPI. For an example, run: python example.py'
+			print('Key: ' + sys.argv[1] + ' was written to api_key.txt')
+			print('You are now ready to start using AlchemyAPI. For an example, run: python example.py')
 		else:
-			print 'The key appears to invalid. Please make sure to use the 40 character key assigned by AlchemyAPI'
+			print('The key appears to invalid. Please make sure to use the 40 character key assigned by AlchemyAPI')
 
 
 
@@ -99,12 +105,12 @@ class AlchemyAPI:
 			
 			if key == '':
 				#The key file should't be blank
-				print 'The api_key.txt file appears to be blank, please run: python alchemyapi.py YOUR_KEY_HERE'
-				print 'If you do not have an API Key from AlchemyAPI, please register for one at: http://www.alchemyapi.com/api/register.html'
+				print('The api_key.txt file appears to be blank, please run: python alchemyapi.py YOUR_KEY_HERE')
+				print('If you do not have an API Key from AlchemyAPI, please register for one at: http://www.alchemyapi.com/api/register.html')
 				sys.exit(0)
 			elif len(key) != 40:
 				#Keys should be exactly 40 characters long
-				print 'It appears that the key in api_key.txt is invalid. Please make sure the file only includes the API key, and it is the correct one.'
+				print('It appears that the key in api_key.txt is invalid. Please make sure the file only includes the API key, and it is the correct one.')
 				sys.exit(0)
 			else:
 				#setup the key
@@ -114,14 +120,14 @@ class AlchemyAPI:
 			f.close()
 		except IOError:
 			#The file doesn't exist, so show the message and create the file.
-			print 'API Key not found! Please run: python alchemyapi.py YOUR_KEY_HERE'
-			print 'If you do not have an API Key from AlchemyAPI, please register for one at: http://www.alchemyapi.com/api/register.html'
+			print('API Key not found! Please run: python alchemyapi.py YOUR_KEY_HERE')
+			print('If you do not have an API Key from AlchemyAPI, please register for one at: http://www.alchemyapi.com/api/register.html')
 			
 			#create a blank key file
 			open('api_key.txt', 'a').close()
 			sys.exit(0)
 		except Exception as e:
-			print e
+			print(e)
 
 
 
@@ -560,7 +566,7 @@ class AlchemyAPI:
 			f = urllib2.urlopen(req)
 			return json.load(f)
 		except Exception as e:
-			print "error for url: ", url
-			print e
+			print('error for url: ', url)
+			print(e)
 			return { u'status':'ERROR', u'statusInfo':u'network-error' }
 
