@@ -25,11 +25,11 @@ To get started and run the example, simply:
 
 	git clone https://github.com/steveherschleb/sdk_python.git
 	cd sdk_python
-	python -c 'import alchemyapi;alchemyapi.setkey("{API_KEY}");'
+	python alchemyapi YOUR_API_KEY
 	python example.py
 
 
-Just replace {API_KEY} with your key, and you should be good to go.
+Just replace YOUR_API_KEY with your 40 character API key from AlchemyAPI, and you should be good to go.
 
 	
 	
