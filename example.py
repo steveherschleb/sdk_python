@@ -1,4 +1,4 @@
-import alchemyapi
+from alchemyapi import AlchemyAPI
 import json
 
 demo_text = 'Yesterday dumb Bob destroyed my fancy iPhone in beautiful Denver, Colorado. I guess I will have to head over to the Apple Store and buy a new one.'
@@ -30,6 +30,8 @@ print '    +  ~7777777                                                          
 print '       I777777                                                                                                                             '
 print '          :~                                                                                                                               '
 	 
+
+alchemyapi = AlchemyAPI()
 
 print ''
 print ''
