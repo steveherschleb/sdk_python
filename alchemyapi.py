@@ -160,7 +160,7 @@ class AlchemyAPI:
 
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['sentiment']:
-			return { u'status':'ERROR', u'statusInfo':u'sentiment analysis for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'sentiment analysis for ' + flavor + ' not available' }
 			
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -189,11 +189,11 @@ class AlchemyAPI:
 
 		#Make sure the target is valid
 		if target is None or target == '':
-			return { u'status':'ERROR', u'statusInfo':u'targeted sentiment requires a non-null target' }
+			return { 'status':'ERROR', 'statusInfo':'targeted sentiment requires a non-null target' }
 
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['sentiment_targeted']:
-			return { u'status':'ERROR', u'statusInfo':u'targeted sentiment analysis for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'targeted sentiment analysis for ' + flavor + ' not available' }
 			
 		#add the URL encoded data and target to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -222,7 +222,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['author']:
-			return { u'status':'ERROR', u'statusInfo':u'author extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'author extraction for ' + flavor + ' not available' }
 
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -252,7 +252,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['keywords']:
-			return { u'status':'ERROR', u'statusInfo':u'keyword extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'keyword extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -276,7 +276,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['concepts']:
-			return { u'status':'ERROR', u'statusInfo':u'concept tagging for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'concept tagging for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -309,7 +309,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['entities']:
-			return { u'status':'ERROR', u'statusInfo':u'entity extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'entity extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -336,7 +336,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['category']:
-			return { u'status':'ERROR', u'statusInfo':u'text categorization for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'text categorization for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -373,7 +373,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['relations']:
-			return { u'status':'ERROR', u'statusInfo':u'relation extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'relation extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -400,7 +400,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['language']:
-			return { u'status':'ERROR', u'statusInfo':u'language detection for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'language detection for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -428,7 +428,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['text_clean']:
-			return { u'status':'ERROR', u'statusInfo':u'clean text extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'clean text extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -455,7 +455,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['text_raw']:
-			return { u'status':'ERROR', u'statusInfo':u'raw text extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'raw text extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -483,7 +483,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['text_title']:
-			return { u'status':'ERROR', u'statusInfo':u'title extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'title extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -511,7 +511,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['microformats']:
-			return { u'status':'ERROR', u'statusInfo':u'microformat extraction for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'microformat extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -539,7 +539,7 @@ class AlchemyAPI:
 		
 		#Make sure this request supports this flavor
 		if flavor not in AlchemyAPI.ENDPOINTS['feeds']:
-			return { u'status':'ERROR', u'statusInfo':u'feed detection for ' + flavor + ' not available' }
+			return { 'status':'ERROR', 'statusInfo':'feed detection for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
 		options[flavor] = urlquote(data)
@@ -577,5 +577,5 @@ class AlchemyAPI:
 		except Exception as e:
 			print('error for url: ', url)
 			print(e)
-			return { u'status':'ERROR', u'statusInfo':u'network-error' }
+			return { 'status':'ERROR', 'statusInfo':'network-error' }
 
