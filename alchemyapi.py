@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 from __future__ import print_function
-import urllib2
+
+try:
+	from urllib.request import urlopen
+	from urllib.parse import urlparse
+	from urllib.quote import urlquote
+except ImportError:	
+	from urlparse import urlparse
+	from urllib2 import urlopen
+	from urllib2 import quote as urlquote
+
 try:
 	import json
 except ImportError:
@@ -22,7 +31,7 @@ if __name__ == '__main__':
 	"""
 	
 	import sys
-	if sys.argv[1]:
+	if len(sys.argv) == 2 and sys.argv[1]:
 		if len(sys.argv[1]) == 40:
 			#write the key to the file
 			f = open('api_key.txt','w')
@@ -154,7 +163,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'sentiment analysis for ' + flavor + ' not available' }
 			
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment'][flavor], options)
 
 
@@ -187,8 +196,8 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'targeted sentiment analysis for ' + flavor + ' not available' }
 			
 		#add the URL encoded data and target to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
-		options['target'] = urllib2.quote(target)
+		options[flavor] = urlquote(data)
+		options['target'] = urlquote(target)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment_targeted'][flavor], options)
 
 
@@ -216,7 +225,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'author extraction for ' + flavor + ' not available' }
 
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['author'][flavor], options)
 
 
@@ -246,7 +255,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'keyword extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['keywords'][flavor], options)
 
 			
@@ -270,7 +279,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'concept tagging for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['concepts'][flavor], options)
 			
 
@@ -303,7 +312,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'entity extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['entities'][flavor], options)
 
 
@@ -330,7 +339,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'text categorization for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		
 		return self.__analyze(AlchemyAPI.ENDPOINTS['category'][flavor], options)
 
@@ -367,7 +376,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'relation extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['relations'][flavor], options)
 
 
@@ -394,7 +403,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'language detection for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['language'][flavor], options)
 
 
@@ -422,7 +431,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'clean text extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['text_clean'][flavor], options)
 
 
@@ -449,7 +458,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'raw text extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['text_raw'][flavor], options)
 
 
@@ -477,7 +486,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'title extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['text_title'][flavor], options)
 
 
@@ -505,7 +514,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'microformat extraction for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['microformats'][flavor], options)
 
 
@@ -533,7 +542,7 @@ class AlchemyAPI:
 			return { u'status':'ERROR', u'statusInfo':u'feed detection for ' + flavor + ' not available' }
 		
 		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urllib2.quote(data)
+		options[flavor] = urlquote(data)
 		return self.__analyze(AlchemyAPI.ENDPOINTS['feeds'][flavor], options)
 
 
@@ -562,9 +571,9 @@ class AlchemyAPI:
 		
 		try: 
 			#build the request with uri encoding
-			req = urllib2.Request(url)
-			f = urllib2.urlopen(req)
-			return json.load(f)
+			req = urlparse(url)
+			page = urlopen(req.geturl())
+			return json.load(page)
 		except Exception as e:
 			print('error for url: ', url)
 			print(e)
