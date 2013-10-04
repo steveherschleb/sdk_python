@@ -6,7 +6,6 @@ try:
 	from urllib.parse import urlparse
 	from urllib.parse import quote as urlquote
 except ImportError:	
-	print("IMPORT ERROR")
 	from urlparse import urlparse
 	from urllib2 import urlopen
 	from urllib2 import quote as urlquote
