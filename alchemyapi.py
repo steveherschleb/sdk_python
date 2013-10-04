@@ -4,8 +4,9 @@ from __future__ import print_function
 try:
 	from urllib.request import urlopen
 	from urllib.parse import urlparse
-	from urllib.quote import urlquote
+	from urllib.parse import quote as urlquote
 except ImportError:	
+	print("IMPORT ERROR")
 	from urlparse import urlparse
 	from urllib2 import urlopen
 	from urllib2 import quote as urlquote
@@ -571,9 +572,8 @@ class AlchemyAPI:
 		
 		try: 
 			#build the request with uri encoding
-			req = urlparse(url)
-			page = urlopen(req.geturl())
-			return json.load(page)
+			page = urlopen(url).read().decode("utf-8")
+			return json.loads(page)
 		except Exception as e:
 			print('error for url: ', url)
 			print(e)
