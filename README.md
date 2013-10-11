@@ -1,4 +1,4 @@
-# sdk_python #
+# alchemyapi_python #
 
 A sdk for AlchemyAPI using Python
 
@@ -24,7 +24,7 @@ To use AlchemyAPI, you'll need to obtain an API key and attach that key to all r
 To get started and run the example, simply:
 
 	git clone https://github.com/AlchemyAPI/alchemyapi_python.git
-	cd sdk_python
+	cd alchemyapi_python
 	python alchemyapi.py YOUR_API_KEY
 	python example.py
 
