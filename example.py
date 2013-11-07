@@ -3,8 +3,9 @@ from __future__ import print_function
 from alchemyapi import AlchemyAPI
 import json
 
+
 demo_text = 'Yesterday dumb Bob destroyed my fancy iPhone in beautiful Denver, Colorado. I guess I will have to head over to the Apple Store and buy a new one.'
-demo_url = 'http://blog.programmableweb.com/2011/09/16/new-api-billionaire-text-extractor-alchemy/'
+demo_url = 'http://semanticweb.com/semanticweb-com-%E2%80%9Cinnovation-spotlight%E2%80%9D-interview-with-elliot-turner-ceo-of-alchemyapi_b30913'
 demo_html = '<html><head><title>Python Demo | AlchemyAPI</title></head><body><h1>Did you know that AlchemyAPI works on HTML?</h1><p>Well, you do now.</p></body></html>'
 
 
@@ -33,6 +34,7 @@ print('       I777777                                                           
 print('          :~                                                                                                                               ')
 	 
 
+#Create the AlchemyAPI Object
 alchemyapi = AlchemyAPI()
 
 print('')
@@ -40,7 +42,7 @@ print('')
 print('############################################')
 print('#   Entity Extraction Example              #')
 print('############################################')
-print('')
+print('')  
 print('')
 
 print('Processing text: ', demo_text)
@@ -56,40 +58,15 @@ if response['status'] == 'OK':
 	print('')
 	print('## Entities ##')
 	for entity in response['entities']:
-		print('text: ', entity['text'])
+		print('text: ', entity['text'].encode('utf-8'))
 		print('type: ', entity['type'])
 		print('relevance: ', entity['relevance'])
-		print('sentiment: ', entity['sentiment']['type'] + ' (' + entity['sentiment']['score'] + ')')
+		print('sentiment: ', entity['sentiment']['type'])
+		if 'score' in entity['sentiment']:
+			print('sentiment score: ' + entity['sentiment']['score'])
 		print('')
 else:
 	print('Error in entity extraction call: ', response['statusInfo'])
-
-
-
-print('')
-print('')
-print('')
-print('############################################')
-print('#   Sentiment Analysis Example             #')
-print('############################################')
-print('')
-print('')
-
-print('Processing html: ', demo_html)
-print('')
-
-response = alchemyapi.sentiment('html',demo_html)
-
-if response['status'] == 'OK':
-	print('## Response Object ##')
-	print(json.dumps(response, indent=4))
-
-	print('')
-	print('## Document Sentiment ##')
-	print('type: ', response['docSentiment']['type'])
-	print('score: ', response['docSentiment']['score'])
-else:
-	print('Error in sentiment analysis call: ', response['statusInfo'])
 
 
 
@@ -115,9 +92,11 @@ if response['status'] == 'OK':
 	print('')
 	print('## Keywords ##')
 	for keyword in response['keywords']:
-		print('text: ', keyword['text'])
+		print('text: ', keyword['text'].encode('utf-8'))
 		print('relevance: ', keyword['relevance'])
-		print('sentiment: ', keyword['sentiment']['type'] + ' (' + keyword['sentiment']['score'] + ')')
+		print('sentiment: ', keyword['sentiment']['type']) 
+		if 'score' in keyword['sentiment']:
+			print('sentiment score: ' + keyword['sentiment']['score'])
 		print('')
 else:
 	print('Error in keyword extaction call: ', response['statusInfo'])
@@ -158,6 +137,147 @@ print('')
 print('')
 print('')
 print('############################################')
+print('#   Sentiment Analysis Example             #')
+print('############################################')
+print('')
+print('')
+
+print('Processing html: ', demo_html)
+print('')
+
+response = alchemyapi.sentiment('html',demo_html)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	print('## Document Sentiment ##')
+	print('type: ', response['docSentiment']['type'])
+	
+	if 'score' in response['docSentiment']:
+		print('score: ', response['docSentiment']['score'])
+else:
+	print('Error in sentiment analysis call: ', response['statusInfo'])
+
+
+
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Text Extraction Example                #')
+print('############################################')
+print('')
+print('')
+
+print('Processing url: ', demo_url)
+print('')
+
+response = alchemyapi.text('url',demo_url)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	print('## Text ##')
+	print('text: ', response['text'].encode('utf-8'))
+	print('')
+else:
+	print('Error in text extraction call: ', response['statusInfo'])
+
+
+
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Author Extraction Example              #')
+print('############################################')
+print('')
+print('')
+
+print('Processing url: ', demo_url)
+print('')
+
+response = alchemyapi.author('url',demo_url)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	print('## Author ##')
+	print('author: ', response['author'].encode('utf-8'))
+	print('')
+else:
+	print('Error in author extraction call: ', response['statusInfo'])
+
+
+
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Language Detection Example             #')
+print('############################################')
+print('')
+print('')
+
+print('Processing text: ', demo_text)
+print('')
+
+response = alchemyapi.language('text',demo_text)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+
+	print('')
+	print('## Language ##')
+	print('language: ', response['language'])
+	print('iso-639-1: ', response['iso-639-1'])
+	print('native speakers: ', response['native-speakers'])
+	print('')
+else:
+	print('Error in language detection call: ', response['statusInfo'])
+
+
+
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Title Extraction Example               #')
+print('############################################')
+print('')
+print('')
+
+print('Processing url: ', demo_url)
+print('')
+
+response = alchemyapi.title('url',demo_url)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+
+	print('')
+	print('## Title ##')
+	print('title: ', response['title'].encode('utf-8'))
+	print('')
+else:
+	print('Error in title extraction call: ', response['statusInfo'])
+
+
+
+print('')
+print('')
+print('')
+print('############################################')
 print('#   Relation Extraction Example            #')
 print('############################################')
 print('')
@@ -177,13 +297,13 @@ if response['status'] == 'OK':
 	print('## Relations ##')
 	for relation in response['relations']:
 		if 'subject' in relation:
-			print('Subject: ', relation['subject']['text'] )
+			print('Subject: ', relation['subject']['text'].encode('utf-8'))
 		
 		if 'action' in relation:
-			print('Action: ', relation['action']['text'])
+			print('Action: ', relation['action']['text'].encode('utf-8'))
 		
 		if 'object' in relation:
-			print('Object: ', relation['object']['text'])
+			print('Object: ', relation['object']['text'].encode('utf-8'))
 		
 		print('')
 else:
@@ -224,63 +344,6 @@ print('')
 print('')
 print('')
 print('############################################')
-print('#   Language Detection Example             #')
-print('############################################')
-print('')
-print('')
-
-print('Processing text: ', demo_text)
-print('')
-
-response = alchemyapi.language('text',demo_text)
-
-if response['status'] == 'OK':
-	print('## Response Object ##')
-	print(json.dumps(response, indent=4))
-
-
-	print('')
-	print('## Language ##')
-	print('language: ', response['language'])
-	print('iso-639-1: ', response['iso-639-1'])
-	print('native speakers: ', response['native-speakers'])
-	print('')
-else:
-	print('Error in language detection call: ', response['statusInfo'])
-
-
-
-print('')
-print('')
-print('')
-print('############################################')
-print('#   Author Extraction Example              #')
-print('############################################')
-print('')
-print('')
-
-print('Processing url: ', demo_url)
-print('')
-
-response = alchemyapi.author('url',demo_url)
-
-if response['status'] == 'OK':
-	print('## Response Object ##')
-	print(json.dumps(response, indent=4))
-
-	print('')
-	print('## Author ##')
-	print('author: ', response['author'])
-	print('')
-else:
-	print('Error in author extraction call: ', response['statusInfo'])
-
-
-
-print('')
-print('')
-print('')
-print('############################################')
 print('#   Feed Detection Example                 #')
 print('############################################')
 print('')
@@ -304,4 +367,41 @@ else:
 
 print('')
 print('')
+
+
+
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Microformats Parsing Example           #')
+print('############################################')
+print('')
+print('')
+
+print('Processing url: ', demo_url)
+print('')
+
+response = alchemyapi.microformats('url',demo_url)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	print('## Microformats ##')
+	for microformat in response['microformats']:
+		print('Field: ', microformat['field'].encode('utf-8'))
+		print('Data: ', microformat['data'])
+		print('')
+
+else:
+	print('Error in microformats parsing call: ', response['statusInfo'])
+
+print('')
+print('')
+
+
+
+
 

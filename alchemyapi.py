@@ -4,11 +4,11 @@ from __future__ import print_function
 try:
 	from urllib.request import urlopen
 	from urllib.parse import urlparse
-	from urllib.parse import quote as urlquote
+	from urllib.parse import urlencode
 except ImportError:	
 	from urlparse import urlparse
 	from urllib2 import urlopen
-	from urllib2 import quote as urlquote
+	from urllib import urlencode
 
 try:
 	import json
@@ -82,21 +82,23 @@ class AlchemyAPI:
 	ENDPOINTS['language']['url']  = '/url/URLGetLanguage'
 	ENDPOINTS['language']['text'] = '/text/TextGetLanguage'
 	ENDPOINTS['language']['html'] = '/html/HTMLGetLanguage'
-	ENDPOINTS['text_clean'] = {}
-	ENDPOINTS['text_clean']['url']  = '/url/URLGetText'
-	ENDPOINTS['text_clean']['html'] = '/html/HTMLGetText'
+	ENDPOINTS['text'] = {}
+	ENDPOINTS['text']['url']  = '/url/URLGetText'
+	ENDPOINTS['text']['html'] = '/html/HTMLGetText'
 	ENDPOINTS['text_raw'] = {}
 	ENDPOINTS['text_raw']['url']  = '/url/URLGetRawText'
 	ENDPOINTS['text_raw']['html'] = '/html/HTMLGetRawText'
-	ENDPOINTS['text_title'] = {}
-	ENDPOINTS['text_title']['url']  = '/url/URLGetTitle'
-	ENDPOINTS['text_title']['html'] = '/html/HTMLGetTitle'
+	ENDPOINTS['title'] = {}
+	ENDPOINTS['title']['url']  = '/url/URLGetTitle'
+	ENDPOINTS['title']['html'] = '/html/HTMLGetTitle'
 	ENDPOINTS['feeds'] = {}
 	ENDPOINTS['feeds']['url']  = '/url/URLGetFeedLinks'
 	ENDPOINTS['feeds']['html'] = '/html/HTMLGetFeedLinks'
 	ENDPOINTS['microformats'] = {}
 	ENDPOINTS['microformats']['url']  = '/url/URLGetMicroformatData'
 	ENDPOINTS['microformats']['html'] = '/html/HTMLGetMicroformatData'
+	
+	#The base URL for all endpoints
 	BASE_URL = 'http://access.alchemyapi.com/calls'
 
 
@@ -123,7 +125,7 @@ class AlchemyAPI:
 				sys.exit(0)
 			else:
 				#setup the key
-				self.apiKey = key
+				self.apikey = key
 				
 			# Close file
 			f.close()
@@ -137,6 +139,96 @@ class AlchemyAPI:
 			sys.exit(0)
 		except Exception as e:
 			print(e)
+
+			
+
+	def entities(self, flavor, data, options={}):
+		"""
+		Extracts the entities for text, a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/entity-extraction/ 
+		For the docs, please refer to: http://www.alchemyapi.com/api/entity-extraction/
+		
+		INPUT:
+		flavor -> which version of the call, i.e. text, url or html.
+		data -> the data to analyze, either the text, the url or html code.
+		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+		
+		Available Options:
+		disambiguate -> disambiguate entities (i.e. Apple the company vs. apple the fruit). 0: disabled, 1: enabled (default)
+		linkedData -> include linked data on disambiguated entities. 0: disabled, 1: enabled (default) 
+		coreference -> resolve coreferences (i.e. the pronouns that correspond to named entities). 0: disabled, 1: enabled (default)
+		quotations -> extract quotations by entities. 0: disabled (default), 1: enabled.
+		sentiment -> analyze sentiment for each entity. 0: disabled (default), 1: enabled. Requires 1 additional API transction if enabled.
+		showSourceText -> 0: disabled (default), 1: enabled 
+		maxRetrieve -> the maximum number of entities to retrieve (default: 50)
+
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		"""
+		
+		#Make sure this request supports this flavor
+		if flavor not in AlchemyAPI.ENDPOINTS['entities']:
+			return { 'status':'ERROR', 'statusInfo':'entity extraction for ' + flavor + ' not available' }
+		
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['entities'][flavor], options)
+
+	
+	
+	def keywords(self, flavor, data, options={}):
+		"""
+		Extracts the keywords from text, a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/keyword-extraction/
+		For the docs, please refer to: http://www.alchemyapi.com/api/keyword-extraction/
+		
+		INPUT:
+		flavor -> which version of the call, i.e. text, url or html.
+		data -> the data to analyze, either the text, the url or html code.
+		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+				
+		Available Options:
+		keywordExtractMode -> normal (default), strict
+		sentiment -> analyze sentiment for each keyword. 0: disabled (default), 1: enabled. Requires 1 additional API transaction if enabled.
+		showSourceText -> 0: disabled (default), 1: enabled.
+		maxRetrieve -> the max number of keywords returned (default: 50)
+
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		"""
+		
+		#Make sure this request supports this flavor
+		if flavor not in AlchemyAPI.ENDPOINTS['keywords']:
+			return { 'status':'ERROR', 'statusInfo':'keyword extraction for ' + flavor + ' not available' }
+		
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['keywords'][flavor], options)
+
+
+
+	def concepts(self, flavor, data, options={}):
+		"""
+		Tags the concepts for text, a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/concept-tagging/
+		For the docs, please refer to: http://www.alchemyapi.com/api/concept-tagging/ 
+		
+		Available Options:
+		maxRetrieve -> the maximum number of concepts to retrieve (default: 8)
+		linkedData -> include linked data, 0: disabled, 1: enabled (default)
+		showSourceText -> 0:disabled (default), 1: enabled
+
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		"""
+		
+		#Make sure this request supports this flavor
+		if flavor not in AlchemyAPI.ENDPOINTS['concepts']:
+			return { 'status':'ERROR', 'statusInfo':'concept tagging for ' + flavor + ' not available' }
+		
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['concepts'][flavor], options)
 
 
 
@@ -162,8 +254,8 @@ class AlchemyAPI:
 		if flavor not in AlchemyAPI.ENDPOINTS['sentiment']:
 			return { 'status':'ERROR', 'statusInfo':'sentiment analysis for ' + flavor + ' not available' }
 			
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
+		#add the data to the options and analyze 			
+		options[flavor] = data
 		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment'][flavor], options)
 
 
@@ -196,9 +288,66 @@ class AlchemyAPI:
 			return { 'status':'ERROR', 'statusInfo':'targeted sentiment analysis for ' + flavor + ' not available' }
 			
 		#add the URL encoded data and target to the options and analyze 			
-		options[flavor] = urlquote(data)
-		options['target'] = urlquote(target)
+		options[flavor] = data
+		options['target'] = target
 		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment_targeted'][flavor], options)
+
+
+	
+	def text(self, flavor, data, options={}):
+		"""
+		Extracts the cleaned text (removes ads, navigation, etc.) for text, a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/
+		For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
+		
+		INPUT:
+		flavor -> which version of the call, i.e. text, url or html.
+		data -> the data to analyze, either the text, the url or html code.
+		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+		
+		Available Options:
+		useMetadata -> utilize meta description data, 0: disabled, 1: enabled (default)
+		extractLinks -> include links, 0: disabled (default), 1: enabled.
+
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		"""
+		
+		#Make sure this request supports this flavor
+		if flavor not in AlchemyAPI.ENDPOINTS['text']:
+			return { 'status':'ERROR', 'statusInfo':'clean text extraction for ' + flavor + ' not available' }
+		
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['text'][flavor], options)
+
+
+
+	def text_raw(self, flavor, data, options={}):
+		"""
+		Extracts the raw text (includes ads, navigation, etc.) for a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/ 
+		For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
+		
+		INPUT:
+		flavor -> which version of the call, i.e. text, url or html.
+		data -> the data to analyze, either the text, the url or html code.
+		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+		
+		Available Options:
+		none
+
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		"""
+		
+		#Make sure this request supports this flavor
+		if flavor not in AlchemyAPI.ENDPOINTS['text_raw']:
+			return { 'status':'ERROR', 'statusInfo':'raw text extraction for ' + flavor + ' not available' }
+		
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['text_raw'][flavor], options)
 
 
 
@@ -224,70 +373,45 @@ class AlchemyAPI:
 		if flavor not in AlchemyAPI.ENDPOINTS['author']:
 			return { 'status':'ERROR', 'statusInfo':'author extraction for ' + flavor + ' not available' }
 
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
+		#add the data to the options and analyze 			
+		options[flavor] = data
 		return self.__analyze(AlchemyAPI.ENDPOINTS['author'][flavor], options)
 
 
-	def keywords(self, flavor, data, options={}):
+	
+	def language(self, flavor, data, options={}):
 		"""
-		Extracts the keywords from text, a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/keyword-extraction/
-		For the docs, please refer to: http://www.alchemyapi.com/api/keyword-extraction/
+		Detects the language for text, a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/api/language-detection/ 
+		For the docs, please refer to: http://www.alchemyapi.com/products/features/language-detection/
 		
 		INPUT:
 		flavor -> which version of the call, i.e. text, url or html.
 		data -> the data to analyze, either the text, the url or html code.
 		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
-				
+
 		Available Options:
-		keywordExtractMode -> normal (default), strict
-		sentiment -> analyze sentiment for each keyword. 0: disabled (default), 1: enabled. Requires 1 additional API transaction if enabled.
-		showSourceText -> 0: disabled (default), 1: enabled.
-		maxRetrieve -> the max number of keywords returned (default: 50)
+		none
 
 		OUTPUT:
 		The response, already converted from JSON to a Python object. 
 		"""
 		
 		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['keywords']:
-			return { 'status':'ERROR', 'statusInfo':'keyword extraction for ' + flavor + ' not available' }
+		if flavor not in AlchemyAPI.ENDPOINTS['language']:
+			return { 'status':'ERROR', 'statusInfo':'language detection for ' + flavor + ' not available' }
 		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['keywords'][flavor], options)
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['language'][flavor], options)
 
-			
-	def concepts(self, flavor, data, options={}):
-		"""
-		Tags the concepts for text, a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/concept-tagging/
-		For the docs, please refer to: http://www.alchemyapi.com/api/concept-tagging/ 
-		
-		Available Options:
-		maxRetrieve -> the maximum number of concepts to retrieve (default: 8)
-		linkedData -> include linked data, 0: disabled, 1: enabled (default)
-		showSourceText -> 0:disabled (default), 1: enabled
 
-		OUTPUT:
-		The response, already converted from JSON to a Python object. 
-		"""
-		
-		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['concepts']:
-			return { 'status':'ERROR', 'statusInfo':'concept tagging for ' + flavor + ' not available' }
-		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['concepts'][flavor], options)
-			
 
-	def entities(self, flavor, data, options={}):
+	def title(self, flavor, data, options={}):
 		"""
-		Extracts the entities for text, a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/entity-extraction/ 
-		For the docs, please refer to: http://www.alchemyapi.com/api/entity-extraction/
+		Extracts the title for a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/ 
+		For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
 		
 		INPUT:
 		flavor -> which version of the call, i.e. text, url or html.
@@ -295,53 +419,20 @@ class AlchemyAPI:
 		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
 		
 		Available Options:
-		disambiguate -> disambiguate entities (i.e. Apple the company vs. apple the fruit). 0: disabled, 1: enabled (default)
-		linkedData -> include linked data on disambiguated entities. 0: disabled, 1: enabled (default) 
-		coreference -> resolve coreferences (i.e. the pronouns that correspond to named entities). 0: disabled, 1: enabled (default)
-		quotations -> extract quotations by entities. 0: disabled (default), 1: enabled.
-		sentiment -> analyze sentiment for each entity. 0: disabled (default), 1: enabled. Requires 1 additional API transction if enabled.
-		showSourceText -> 0: disabled (default), 1: enabled 
-		maxRetrieve -> the maximum number of entities to retrieve (default: 50)
+		useMetadata -> utilize title info embedded in meta data, 0: disabled, 1: enabled (default) 
 
 		OUTPUT:
 		The response, already converted from JSON to a Python object. 
 		"""
 		
 		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['entities']:
-			return { 'status':'ERROR', 'statusInfo':'entity extraction for ' + flavor + ' not available' }
+		if flavor not in AlchemyAPI.ENDPOINTS['title']:
+			return { 'status':'ERROR', 'statusInfo':'title extraction for ' + flavor + ' not available' }
 		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['entities'][flavor], options)
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['title'][flavor], options)
 
-
-	def category(self, flavor, data, options={}):
-		"""
-		Categorizes the text for text, a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-categorization/
-		For the docs, please refer to: http://www.alchemyapi.com/api/text-categorization/
-		
-		INPUT:
-		flavor -> which version of the call, i.e. text, url or html.
-		data -> the data to analyze, either the text, the url or html code.
-		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
-		
-		Available Options:
-		showSourceText -> 0: disabled (default), 1: enabled
-
-		OUTPUT:
-		The response, already converted from JSON to a Python object. 
-		"""
-		
-		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['category']:
-			return { 'status':'ERROR', 'statusInfo':'text categorization for ' + flavor + ' not available' }
-		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		
-		return self.__analyze(AlchemyAPI.ENDPOINTS['category'][flavor], options)
 
 
 	def relations(self, flavor, data, options={}):
@@ -375,43 +466,17 @@ class AlchemyAPI:
 		if flavor not in AlchemyAPI.ENDPOINTS['relations']:
 			return { 'status':'ERROR', 'statusInfo':'relation extraction for ' + flavor + ' not available' }
 		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
+		#add the data to the options and analyze 			
+		options[flavor] = data
 		return self.__analyze(AlchemyAPI.ENDPOINTS['relations'][flavor], options)
 
 
-	def language(self, flavor, data, options={}):
+
+	def category(self, flavor, data, options={}):
 		"""
-		Detects the language for text, a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/api/language-detection/ 
-		For the docs, please refer to: http://www.alchemyapi.com/products/features/language-detection/
-		
-		INPUT:
-		flavor -> which version of the call, i.e. text, url or html.
-		data -> the data to analyze, either the text, the url or html code.
-		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
-
-		Available Options:
-		none
-
-		OUTPUT:
-		The response, already converted from JSON to a Python object. 
-		"""
-		
-		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['language']:
-			return { 'status':'ERROR', 'statusInfo':'language detection for ' + flavor + ' not available' }
-		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['language'][flavor], options)
-
-
-	def text_clean(self, flavor, data, options={}):
-		"""
-		Extracts the cleaned text (removes ads, navigation, etc.) for text, a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/
-		For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
+		Categorizes the text for text, a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-categorization/
+		For the docs, please refer to: http://www.alchemyapi.com/api/text-categorization/
 		
 		INPUT:
 		flavor -> which version of the call, i.e. text, url or html.
@@ -419,103 +484,20 @@ class AlchemyAPI:
 		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
 		
 		Available Options:
-		useMetadata -> utilize meta description data, 0: disabled, 1: enabled (default)
-		extractLinks -> include links, 0: disabled (default), 1: enabled.
+		showSourceText -> 0: disabled (default), 1: enabled
 
 		OUTPUT:
 		The response, already converted from JSON to a Python object. 
 		"""
 		
 		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['text_clean']:
-			return { 'status':'ERROR', 'statusInfo':'clean text extraction for ' + flavor + ' not available' }
+		if flavor not in AlchemyAPI.ENDPOINTS['category']:
+			return { 'status':'ERROR', 'statusInfo':'text categorization for ' + flavor + ' not available' }
 		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['text_clean'][flavor], options)
-
-
-	def text_raw(self, flavor, data, options={}):
-		"""
-		Extracts the raw text (includes ads, navigation, etc.) for a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/ 
-		For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
+		#add the data to the options and analyze 			
+		options[flavor] = data
 		
-		INPUT:
-		flavor -> which version of the call, i.e. text, url or html.
-		data -> the data to analyze, either the text, the url or html code.
-		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
-		
-		Available Options:
-		none
-
-		OUTPUT:
-		The response, already converted from JSON to a Python object. 
-		"""
-		
-		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['text_raw']:
-			return { 'status':'ERROR', 'statusInfo':'raw text extraction for ' + flavor + ' not available' }
-		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['text_raw'][flavor], options)
-
-
-
-	def text_title(self, flavor, data, options={}):
-		"""
-		Extracts the title for a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/text-extraction/ 
-		For the docs, please refer to: http://www.alchemyapi.com/api/text-extraction/
-		
-		INPUT:
-		flavor -> which version of the call, i.e. text, url or html.
-		data -> the data to analyze, either the text, the url or html code.
-		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
-		
-		Available Options:
-		useMetadata -> utilize title info embedded in meta data, 0: disabled, 1: enabled (default) 
-
-		OUTPUT:
-		The response, already converted from JSON to a Python object. 
-		"""
-		
-		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['text_title']:
-			return { 'status':'ERROR', 'statusInfo':'title extraction for ' + flavor + ' not available' }
-		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['text_title'][flavor], options)
-
-
-
-	def microformats(self, flavor, data, options={}):
-		"""
-		Parses the microformats for a URL or HTML.
-		For an overview, please refer to: http://www.alchemyapi.com/products/features/microformats-parsing/
-		For the docs, please refer to: http://www.alchemyapi.com/api/microformats-parsing/
-		
-		INPUT:
-		flavor -> which version of the call, i.e.  url or html.
-		data -> the data to analyze, either the the url or html code.
-		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
-		
-		Available Options:
-		none
-
-		OUTPUT:
-		The response, already converted from JSON to a Python object. 
-		"""
-		
-		#Make sure this request supports this flavor
-		if flavor not in AlchemyAPI.ENDPOINTS['microformats']:
-			return { 'status':'ERROR', 'statusInfo':'microformat extraction for ' + flavor + ' not available' }
-		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
-		return self.__analyze(AlchemyAPI.ENDPOINTS['microformats'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['category'][flavor], options)
 
 
 
@@ -541,13 +523,41 @@ class AlchemyAPI:
 		if flavor not in AlchemyAPI.ENDPOINTS['feeds']:
 			return { 'status':'ERROR', 'statusInfo':'feed detection for ' + flavor + ' not available' }
 		
-		#add the URL encoded data to the options and analyze 			
-		options[flavor] = urlquote(data)
+		#add the data to the options and analyze 			
+		options[flavor] = data
 		return self.__analyze(AlchemyAPI.ENDPOINTS['feeds'][flavor], options)
 
 
 
-	def __analyze(self, url, options):
+	def microformats(self, flavor, data, options={}):
+		"""
+		Parses the microformats for a URL or HTML.
+		For an overview, please refer to: http://www.alchemyapi.com/products/features/microformats-parsing/
+		For the docs, please refer to: http://www.alchemyapi.com/api/microformats-parsing/
+		
+		INPUT:
+		flavor -> which version of the call, i.e.  url or html.
+		data -> the data to analyze, either the the url or html code.
+		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+		
+		Available Options:
+		none
+
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		"""
+		
+		#Make sure this request supports this flavor
+		if flavor not in AlchemyAPI.ENDPOINTS['microformats']:
+			return { 'status':'ERROR', 'statusInfo':'microformat extraction for ' + flavor + ' not available' }
+		
+		#add the data to the options and analyze 			
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['microformats'][flavor], options)
+
+
+
+	def __analyze(self, endpoint, params):
 		"""
 		HTTP Request wrapper that is called by the endpoint functions. This function is not intended to be called through an external interface. 
 		It makes the call, then converts the returned JSON string into a Python object. 
@@ -560,21 +570,16 @@ class AlchemyAPI:
 		"""
 
 		#Insert the base url
-		url = AlchemyAPI.BASE_URL + url;
+		url = AlchemyAPI.BASE_URL + endpoint;
 
 		#Add the API Key and set the output mode to JSON
-		url += '?apikey=' + self.apiKey + '&outputMode=json'
-
-		#Add the options	
-		for key in options:
-			url += '&' + key + '=' + str(options[key])
+		params['apikey'] = self.apikey;
+		params['outputMode'] = 'json';
 		
 		try: 
 			#build the request with uri encoding
-			page = urlopen(url).read().decode("utf-8")
+			page = urlopen(url, data=urlencode(params).encode('utf-8')).read().decode('utf-8')
 			return json.loads(page)
 		except Exception as e:
-			print('error for url: ', url)
 			print(e)
 			return { 'status':'ERROR', 'statusInfo':'network-error' }
-
