@@ -182,6 +182,35 @@ print('')
 print('')
 print('')
 print('############################################')
+print('#   Targeted Sentiment Analysis Example    #')
+print('############################################')
+print('')
+print('')
+
+print('Processing text: ', demo_text)
+print('')
+
+response = alchemyapi.sentiment_targeted('text',demo_text, 'Denver')
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	print('## Targeted Sentiment ##')
+	print('type: ', response['docSentiment']['type'])
+	
+	if 'score' in response['docSentiment']:
+		print('score: ', response['docSentiment']['score'])
+else:
+	print('Error in targeted sentiment analysis call: ', response['statusInfo'])
+
+
+
+print('')
+print('')
+print('')
+print('############################################')
 print('#   Text Extraction Example                #')
 print('############################################')
 print('')
