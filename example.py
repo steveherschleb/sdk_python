@@ -447,6 +447,105 @@ print('')
 print('')
 
 
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Image Extraction Example               #')
+print('############################################')
+print('')
+print('')
+
+print('Processing url: ', demo_url)
+print('')
+
+response = alchemyapi.imageExtraction('url',demo_url)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	print('## Image ##')
+	print('Image: ', response['image'])
+	print('')
+
+else:
+	print('Error in image extraction call: ', response['statusInfo'])
+
+print('')
+print('')
 
 
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Taxonomy  Example                      #')
+print('############################################')
+print('')
+print('')
 
+print('Processing text: ', demo_text)
+print('')
+
+response = alchemyapi.taxonomy('text',demo_text)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	print('## Categories ##')
+	for category in response['taxonomy']:
+		print(category['label'], ' : ', category['score'])
+	print('')
+
+else:
+	print('Error in taxonomy call: ', response['statusInfo'])
+
+print('')
+print('')
+
+
+print('')
+print('')
+print('')
+print('############################################')
+print('#   Combined  Example                      #')
+print('############################################')
+print('')
+print('')
+
+print('Processing text: ', demo_text)
+print('')
+
+response = alchemyapi.combined('text',demo_text)
+
+if response['status'] == 'OK':
+	print('## Response Object ##')
+	print(json.dumps(response, indent=4))
+
+	print('')
+	
+	
+	print('## Keywords ##')
+	for keyword in response['keywords']:
+		print(keyword['text'], ' : ', keyword['relevance'])
+	print('')
+		
+	print('## Concepts ##')
+	for concept in response['concepts']:
+		print(concept['text'], ' : ', concept['relevance'])
+	print('')
+	
+	print('## Entities ##')
+	for entity in response['entities']:
+		print(entity['type'], ' : ', entity['text'], ', ', entity['relevance'])
+	print(' ')
+
+else:
+	print('Error in combined call: ', response['statusInfo'])
+
+print('')
+print('')

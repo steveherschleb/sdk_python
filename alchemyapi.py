@@ -112,7 +112,16 @@ class AlchemyAPI:
 	ENDPOINTS['microformats'] = {}
 	ENDPOINTS['microformats']['url']  = '/url/URLGetMicroformatData'
 	ENDPOINTS['microformats']['html'] = '/html/HTMLGetMicroformatData'
-	
+	ENDPOINTS['combined'] = {}
+	ENDPOINTS['combined']['url'] = '/url/URLGetCombinedData'
+	ENDPOINTS['combined']['text'] = '/text/TextGetCombinedData'
+	ENDPOINTS['image'] = {}
+	ENDPOINTS['image']['url'] = '/url/URLGetImage'
+	ENDPOINTS['taxonomy'] = {}
+	ENDPOINTS['taxonomy']['url'] = '/url/URLGetRankedTaxonomy'
+	ENDPOINTS['taxonomy']['html'] = '/html/HTMLGetRankedTaxonomy'
+	ENDPOINTS['taxonomy']['text'] = '/text/TextGetRankedTaxonomy'
+
 	#The base URL for all endpoints
 	BASE_URL = 'http://access.alchemyapi.com/calls'
 
@@ -570,7 +579,144 @@ class AlchemyAPI:
 		options[flavor] = data
 		return self.__analyze(AlchemyAPI.ENDPOINTS['microformats'][flavor], options)
 
+	def imageExtraction(self, flavor, data, options={}):
+		"""
+		Extracts main image from a URL
+		
+		INPUT:
+		flavor -> which version of the call (url only currently).
+		data -> URL to analyze
+		options -> various parameters that can be used to adjust how the API works, 
+		see below for more info on the available options.
+		
+		Available Options:
+		extractMode -> 
+		     trust-metadata  :  (less CPU intensive, less accurate)
+		     always-infer    :  (more CPU intensive, more accurate)
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+ 		"""
+		if flavor not in AlchemyAPI.ENDPOINTS['image']:
+			return { 'status':'ERROR', 'statusInfo':'image extraction for ' + flavor + ' not available' }	
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['image'][flavor], options)
 
+	def taxonomy(self, flavor, data, options={}):
+		"""
+		Taxonomy classification operations.
+
+		INPUT:
+		flavor -> which version of the call, i.e.  url or html.
+		data -> the data to analyze, either the the url or html code.
+		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+
+		
+		Available Options:
+		showSourceText  -> 
+		    include the original 'source text' the taxonomy categories were extracted from within the API response
+		    Possible values:
+		        1 - enabled
+			0 - disabled (default) 
+
+		sourceText ->
+		    where to obtain the text that will be processed by this API call.
+		    
+		    AlchemyAPI supports multiple modes of text extraction:
+		        web page cleaning (removes ads, navigation links, etc.), raw text extraction 
+			(processes all web page text, including ads / nav links), visual constraint queries, and XPath queries. 
+
+		    Possible values:
+		        cleaned_or_raw  : cleaning enabled, fallback to raw when cleaning produces no text (default)
+			cleaned         : operate on 'cleaned' web page text (web page cleaning enabled)
+			raw             : operate on raw web page text (web page cleaning disabled)
+			cquery          : operate on the results of a visual constraints query 
+                                          Note: The 'cquery' http argument must also be set to a valid visual constraints query.
+			xpath           : operate on the results of an XPath query 
+                                          Note: The 'xpath' http argument must also be set to a valid XPath query.
+
+		cquery ->
+		    a visual constraints query to apply to the web page.
+		
+		xpath ->
+		    an XPath query to apply to the web page.
+
+		baseUrl ->
+		    rel-tag output base http url (must be uri-argument encoded)
+
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		
+		"""
+		if flavor not in AlchemyAPI.ENDPOINTS['taxonomy']:
+			return { 'status':'ERROR', 'statusInfo':'taxonomy for ' + flavor + ' not available' }	
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['taxonomy'][flavor], options)
+
+	def combined(self, flavor, data, options={}):
+		"""
+		Combined call for page-image, entity, keyword, title, author, taxonomy,  concept.
+
+		INPUT:
+		flavor -> which version of the call, i.e.  url or html.
+		data -> the data to analyze, either the the url or html code.
+		options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+
+		Available Options:
+		extract -> 
+		    Possible values: page-image, entity, keyword, title, author, taxonomy,  concept
+		    default        : entity, keyword, taxonomy,  concept
+		
+		disambiguate -> 
+		    disambiguate detected entities
+		    Possible values:
+		        1 : enabled (default)
+                        0 : disabled
+		    
+		linkedData ->
+		    include Linked Data content links with disambiguated entities
+		    Possible values :
+		        1 : enabled (default)
+                        0 : disabled
+
+		coreference ->
+		    resolve he/she/etc coreferences into detected entities
+		    Possible values:
+		        1 : enabled (default)
+                        0 : disabled
+		
+		quotations -> 
+		    enable quotations extraction
+		    Possible values:
+		        1 : enabled
+                        0 : disabled (default)
+		
+		sentiment ->
+		    enable entity-level sentiment analysis
+		    Possible values:
+		        1 : enabled
+                        0 : disabled (default)
+		
+		showSourceText -> 
+		    include the original 'source text' the entities were extracted from within the API response
+		    Possible values:
+		        1 : enabled
+                        0 : disabled (default)
+		    
+		maxRetrieve ->
+		    maximum number of named entities to extract
+		    default : 50
+
+		baseUrl -> 
+		    rel-tag output base http url
+		    
+		
+		OUTPUT:
+		The response, already converted from JSON to a Python object. 
+		"""
+		if flavor not in AlchemyAPI.ENDPOINTS['combined']:
+			return { 'status':'ERROR', 'statusInfo':'combined for ' + flavor + ' not available' }	
+		options[flavor] = data
+		return self.__analyze(AlchemyAPI.ENDPOINTS['combined'][flavor], options)
 
 	def __analyze(self, endpoint, params):
 		"""
