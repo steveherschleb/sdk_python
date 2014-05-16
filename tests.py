@@ -23,7 +23,7 @@ from alchemyapi import AlchemyAPI
 test_text = 'Bob broke my heart, and then made up this silly sentence to test the PHP SDK'  
 test_html = '<html><head><title>The best SDK Test | AlchemyAPI</title></head><body><h1>Hello World!</h1><p>My favorite language is PHP</p></body></html>'
 test_url = 'http://www.nytimes.com/2013/07/13/us/politics/a-day-of-friction-notable-even-for-a-fractious-congress.html?_r=0'
-
+test_jpg = 'pigeon.jpg'
 
 
 alchemyapi = AlchemyAPI()
@@ -225,6 +225,56 @@ assert(response['status'] == 'OK')
 response = alchemyapi.microformats('url', test_url);
 assert(response['status'] == 'OK')
 print('Microformat tests complete!')
+print('')
+print('')
+
+#imagetagging
+print('Checking imagetagging . . . ')
+response = alchemyapi.imageTagging('text', test_text);
+assert(response['status'] == 'ERROR')	
+response = alchemyapi.imageTagging('html', test_html);
+assert(response['status'] == 'ERROR')
+response = alchemyapi.imageTagging('url', test_url);
+assert(response['status'] == 'OK')
+response = alchemyapi.imageTagging('image', test_jpg);
+assert(response['status'] == 'OK')
+print('Image tagging tests complete!')
+print('')
+print('')
+
+#combined
+print('Checking combined . . . ')
+response = alchemyapi.combined('text', test_text);
+assert(response['status'] == 'OK')
+response = alchemyapi.combined('html', test_html);
+assert(response['status'] == 'ERROR')	
+response = alchemyapi.combined('url', test_url);
+assert(response['status'] == 'OK')
+print('Combined tests complete!')
+print('')
+print('')
+
+#taxonomy
+print('Checking taxonomy . . . ')
+response = alchemyapi.taxonomy('text', test_text);
+assert(response['status'] == 'OK')
+response = alchemyapi.taxonomy('html', test_html, {'url':'test'});
+assert(response['status'] == 'OK')	
+response = alchemyapi.taxonomy('url', test_url);
+assert(response['status'] == 'OK')
+print('Taxonomy tests complete!')
+print('')
+print('')
+
+#image
+print('Checking image extraction . . . ')
+response = alchemyapi.imageExtraction('text', test_text);
+assert(response['status'] == 'ERROR')
+response = alchemyapi.imageExtraction('html', test_html);
+assert(response['status'] == 'ERROR')	
+response = alchemyapi.imageExtraction('url', test_url);
+assert(response['status'] == 'OK')
+print('Image Extraction tests complete!')
 print('')
 print('')
 
