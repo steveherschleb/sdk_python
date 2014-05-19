@@ -486,7 +486,7 @@ print('############################################')
 print('')
 print('')
 
-print('Processing url: ', demo_url)
+print('Processing url: ', image_url)
 print('')
 
 response = alchemyapi.imageTagging('url',image_url)
