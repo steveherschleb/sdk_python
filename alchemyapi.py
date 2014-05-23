@@ -130,6 +130,7 @@ class AlchemyAPI:
 	#The base URL for all endpoints
 	BASE_URL = 'http://access.alchemyapi.com/calls'
 
+	s = requests.Session()
 
 	def __init__(self):
 		"""	
@@ -762,7 +763,7 @@ class AlchemyAPI:
 		post_url = AlchemyAPI.BASE_URL + endpoint + '?' + urlencode(params).encode('utf-8');
 		
 		try: 
-			return requests.post(url=post_url, data=post_data).json()
+			return self.s.post(url=post_url, data=post_data).json()
 		except Exception as e:
 			print(e)
 			return { 'status':'ERROR', 'statusInfo':'network-error' }
