@@ -202,7 +202,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['entities'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['entities'][flavor], {}, options)
 
 	
 	
@@ -233,7 +233,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['keywords'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['keywords'][flavor], {}, options)
 
 
 
@@ -258,7 +258,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['concepts'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['concepts'][flavor], {}, options)
 
 
 
@@ -286,7 +286,7 @@ class AlchemyAPI:
 			
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment'][flavor], {}, options)
 
 
 
@@ -320,7 +320,7 @@ class AlchemyAPI:
 		#add the URL encoded data and target to the options and analyze 			
 		options[flavor] = data
 		options['target'] = target
-		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment_targeted'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['sentiment_targeted'][flavor], {}, options)
 
 
 	
@@ -377,7 +377,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['text_raw'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['text_raw'][flavor], {}, options)
 
 
 
@@ -405,7 +405,7 @@ class AlchemyAPI:
 
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['author'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['author'][flavor], {}, options)
 
 
 	
@@ -433,7 +433,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['language'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['language'][flavor], {}, options)
 
 
 
@@ -461,7 +461,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['title'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['title'][flavor], {}, options)
 
 
 
@@ -498,7 +498,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['relations'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['relations'][flavor], {}, options)
 
 
 
@@ -527,7 +527,7 @@ class AlchemyAPI:
 		#add the data to the options and analyze 			
 		options[flavor] = data
 		
-		return self.__analyze(AlchemyAPI.ENDPOINTS['category'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['category'][flavor], {}, options)
 
 
 
@@ -555,7 +555,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['feeds'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['feeds'][flavor], {}, options)
 
 
 
@@ -583,7 +583,7 @@ class AlchemyAPI:
 		
 		#add the data to the options and analyze 			
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['microformats'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['microformats'][flavor], {}, options)
 
 	def imageExtraction(self, flavor, data, options={}):
 		"""
@@ -605,7 +605,7 @@ class AlchemyAPI:
 		if flavor not in AlchemyAPI.ENDPOINTS['image']:
 			return { 'status':'ERROR', 'statusInfo':'image extraction for ' + flavor + ' not available' }	
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['image'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['image'][flavor], {}, options)
 
 	def taxonomy(self, flavor, data, options={}):
 		"""
@@ -656,7 +656,7 @@ class AlchemyAPI:
 		if flavor not in AlchemyAPI.ENDPOINTS['taxonomy']:
 			return { 'status':'ERROR', 'statusInfo':'taxonomy for ' + flavor + ' not available' }	
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['taxonomy'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['taxonomy'][flavor], {}, options)
 
 	def combined(self, flavor, data, options={}):
 		"""
@@ -722,7 +722,7 @@ class AlchemyAPI:
 		if flavor not in AlchemyAPI.ENDPOINTS['combined']:
 			return { 'status':'ERROR', 'statusInfo':'combined for ' + flavor + ' not available' }	
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['combined'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['combined'][flavor], {}, options)
 
 	def imageTagging(self, flavor, data, options={}):
 		"""
@@ -740,7 +740,7 @@ class AlchemyAPI:
 			return self.__analyze(AlchemyAPI.ENDPOINTS['imagetagging'][flavor], options, image)
 	
 		options[flavor] = data
-		return self.__analyze(AlchemyAPI.ENDPOINTS['imagetagging'][flavor], options)
+		return self.__analyze(AlchemyAPI.ENDPOINTS['imagetagging'][flavor], {}, options)
 		
 	
 	def __analyze(self, endpoint, params, post_data=bytearray()):
@@ -763,7 +763,9 @@ class AlchemyAPI:
 		post_url = AlchemyAPI.BASE_URL + endpoint + '?' + urlencode(params).encode('utf-8');
 		
 		try: 
-			return self.s.post(url=post_url, data=post_data).json()
+                        results = self.s.post(url=post_url, data=post_data)
+			return results.json()
 		except Exception as e:
 			print(e)
 			return { 'status':'ERROR', 'statusInfo':'network-error' }
+
