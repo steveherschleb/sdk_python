@@ -762,10 +762,17 @@ class AlchemyAPI:
 		
 		post_url = AlchemyAPI.BASE_URL + endpoint + '?' + urlencode(params).encode('utf-8');
 		
+                results = ""
 		try: 
                         results = self.s.post(url=post_url, data=post_data)
-			return results.json()
 		except Exception as e:
 			print(e)
 			return { 'status':'ERROR', 'statusInfo':'network-error' }
+                try:
+			return results.json()
+                except Exception as e:
+                        if results != "":
+                            print(results)
+                        print(e)
+                        return { 'status':'ERROR', 'statusInfo':'parse-error' }
 
