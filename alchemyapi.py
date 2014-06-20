@@ -737,8 +737,12 @@ class AlchemyAPI:
         params['outputMode'] = 'json'
         # Insert the base url
 
-        post_url = AlchemyAPI.BASE_URL + endpoint + \
-            '?' + urlencode(params).encode('utf-8')
+        post_url = ""
+        try:
+            post_url = AlchemyAPI.BASE_URL + endpoint + \
+                '?' + urlencode(params).encode('utf-8')
+        except TypeError:
+            post_url = AlchemyAPI.BASE_URL + endpoint + '?' + urlencode(params)
 
         results = ""
         try:
