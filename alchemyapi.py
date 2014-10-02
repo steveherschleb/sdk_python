@@ -737,12 +737,23 @@ class AlchemyAPI:
         params['outputMode'] = 'json'
         # Insert the base url
 
-        post_url = AlchemyAPI.BASE_URL + endpoint + \
-            '?' + urlencode(params).encode('utf-8')
+        post_url = ""
+        try:
+            post_url = AlchemyAPI.BASE_URL + endpoint + \
+                '?' + urlencode(params).encode('utf-8')
+        except TypeError:
+            post_url = AlchemyAPI.BASE_URL + endpoint + '?' + urlencode(params)
 
+        results = ""
         try:
             results = self.s.post(url=post_url, data=post_data)
-            return results.json()
         except Exception as e:
             print(e)
             return {'status': 'ERROR', 'statusInfo': 'network-error'}
+        try:
+            return results.json()
+        except Exception as e:
+            if results != "":
+                print(results)
+            print(e)
+            return {'status': 'ERROR', 'statusInfo': 'parse-error'}
