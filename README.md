@@ -19,6 +19,12 @@ To use AlchemyAPI, you'll need to obtain an API key and attach that key to all r
 
 
 
+## Requirements ##
+
+The Python SDK requires that you install the [Requests Python module](http://docs.python-requests.org/en/latest/user/install/#install).
+
+
+
 ## Getting Started with the Python SDK ##
 
 To get started and run the example, simply:
