@@ -123,6 +123,9 @@ class AlchemyAPI:
     ENDPOINTS['imagetagging'] = {}
     ENDPOINTS['imagetagging']['url'] = '/url/URLGetRankedImageKeywords'
     ENDPOINTS['imagetagging']['image'] = '/image/ImageGetRankedImageKeywords'
+    ENDPOINTS['facetagging'] = {}
+    ENDPOINTS['facetagging']['url'] = '/url/URLGetRankedImageFaceTags'
+    ENDPOINTS['facetagging']['image'] = '/image/ImageGetRankedImageFaceTags'    
     ENDPOINTS['taxonomy'] = {}
     ENDPOINTS['taxonomy']['url'] = '/url/URLGetRankedTaxonomy'
     ENDPOINTS['taxonomy']['html'] = '/html/HTMLGetRankedTaxonomy'
@@ -719,6 +722,24 @@ class AlchemyAPI:
 
         options[flavor] = data
         return self.__analyze(AlchemyAPI.ENDPOINTS['imagetagging'][flavor], {}, options)
+
+    def faceTagging(self, flavor, data, options={}):
+        """
+
+        INPUT:
+        flavor -> which version of the call only url or image.
+        data -> the data to analyze, either the the url or path to image.
+        options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+        """
+        if flavor not in AlchemyAPI.ENDPOINTS['facetagging']:
+            return {'status': 'ERROR', 'statusInfo': 'facetagging for ' + flavor + ' not available'}
+        elif 'image' == flavor:
+            image = open(data, 'rb').read()
+            options['imagePostMode'] = 'raw'
+            return self.__analyze(AlchemyAPI.ENDPOINTS['facetagging'][flavor], options, image)
+
+        options[flavor] = data
+        return self.__analyze(AlchemyAPI.ENDPOINTS['facetagging'][flavor], {}, options)
 
     def __analyze(self, endpoint, params, post_data=bytearray()):
         """
